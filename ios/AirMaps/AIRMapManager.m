@@ -211,7 +211,7 @@ RCT_EXPORT_METHOD(fitToElements:(nonnull NSNumber *)reactTag
 
 - (MKOverlayRenderer *)mapView:(MKMapView *)mapView rendererForOverlay:(id <MKOverlay>)overlay{
     if ([overlay isKindOfClass:[MKTileOverlay class]]) {
-      return [[MKTileOverlayRenderer alloc] initWithTileOverlay:overlay];
+        return [[MKTileOverlayRenderer alloc] initWithTileOverlay:overlay];
     } else if ([overlay isKindOfClass:[AIRMapPolyline class]]) {
         return ((AIRMapPolyline *)overlay).renderer;
     } else if ([overlay isKindOfClass:[AIRMapPolygon class]]) {

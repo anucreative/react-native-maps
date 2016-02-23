@@ -18,11 +18,15 @@ import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapsInitializer;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
+import com.google.android.gms.maps.model.TileProvider;
+import com.google.android.gms.maps.model.UrlTileProvider;
+import com.google.android.gms.maps.model.TileOverlayOptions;
 
+import java.net.URL;
+import java.net.MalformedURLException;
 import java.util.Map;
 
 import javax.annotation.Nullable;
-
 
 public class AirMapManager extends ViewGroupManager<AirMapView> {
 
@@ -36,8 +40,23 @@ public class AirMapManager extends ViewGroupManager<AirMapView> {
         "standard", GoogleMap.MAP_TYPE_NORMAL,
         "satellite", GoogleMap.MAP_TYPE_SATELLITE,
         "hybrid", GoogleMap.MAP_TYPE_HYBRID,
-        "terrain", GoogleMap.MAP_TYPE_TERRAIN
+        "terrain", GoogleMap.MAP_TYPE_TERRAIN,
+        "custom", GoogleMap.MAP_TYPE_NONE
     );
+
+    private String customTilesSource;
+    private TileProvider tileProvider = new UrlTileProvider(256, 256) {
+      @Override
+      public URL getTileUrl(int x, int y, int zoom) {
+        /* Define the URL pattern for the tile images */
+        String s = String.format("http://server.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Light_Gray_Base/MapServer/tile/%d/%d/%d.png", zoom, y, x);
+        try {
+            return new URL(s);
+        } catch (MalformedURLException e) {
+            throw new AssertionError(e);
+        }
+      }
+    };
 
     private ReactContext reactContext;
 
@@ -98,6 +117,15 @@ public class AirMapManager extends ViewGroupManager<AirMapView> {
     public void setMapType(AirMapView view, @Nullable String mapType) {
         int typeId = MAP_TYPES.get(mapType);
         view.map.setMapType(typeId);
+
+        if (mapType.equals("custom")) {
+            view.map.addTileOverlay(new TileOverlayOptions().tileProvider(tileProvider));
+        }
+    }
+
+    @ReactProp(name="tilesSource")
+    public void setTilesSource(AirMapView view, @Nullable String tilesSource) {
+        customTilesSource = tilesSource;
     }
 
     @ReactProp(name="showsUserLocation", defaultBoolean = false)
