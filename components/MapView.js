@@ -116,11 +116,13 @@ var MapView = React.createClass({
      * - standard: standard road map (default)
      * - satellite: satellite view
      * - hybrid: satellite view with roads and points of interest overlayed
+     * - terrain: terrain view
      */
     mapType: PropTypes.oneOf([
       'standard',
       'satellite',
       'hybrid',
+      'terrain'
     ]),
 
     /**
@@ -180,6 +182,11 @@ var MapView = React.createClass({
      * @platform ios
      */
     minDelta: PropTypes.number,
+
+    /**
+     * Url template for custom tiles, e.g. http://tile.openstreetmap.org/{z}/{x}/{y}.png
+     */
+    tilesSource: React.PropTypes.string,
 
     /**
      * Insets for the map's legal label, originally at bottom left of the map.

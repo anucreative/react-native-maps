@@ -81,6 +81,20 @@ RCT_EXPORT_VIEW_PROPERTY(onMarkerDragEnd, RCTDirectEventBlock)
 RCT_EXPORT_VIEW_PROPERTY(onCalloutPress, RCTDirectEventBlock)
 RCT_EXPORT_VIEW_PROPERTY(initialRegion, MKCoordinateRegion)
 
+RCT_CUSTOM_VIEW_PROPERTY(tilesSource, NSString, AIRMap)
+{
+  NSArray *toRemove = [view.overlays filteredArrayUsingPredicate:[NSPredicate predicateWithBlock:^BOOL(id object, NSDictionary *bindings) {
+    return [object isKindOfClass:[MKTileOverlay class]];
+  }]];
+  [view removeOverlays:toRemove];
+  if (json) {
+    MKTileOverlay *overlay = [[MKTileOverlay alloc] initWithURLTemplate:json];
+    overlay.canReplaceMapContent = YES;
+    [view addOverlay:overlay level:MKOverlayLevelAboveLabels];
+  }
+}
+
+
 RCT_CUSTOM_VIEW_PROPERTY(region, MKCoordinateRegion, AIRMap)
 {
     if (json == nil) return;
@@ -196,7 +210,9 @@ RCT_EXPORT_METHOD(fitToElements:(nonnull NSNumber *)reactTag
 #pragma mark Polyline stuff
 
 - (MKOverlayRenderer *)mapView:(MKMapView *)mapView rendererForOverlay:(id <MKOverlay>)overlay{
-    if ([overlay isKindOfClass:[AIRMapPolyline class]]) {
+    if ([overlay isKindOfClass:[MKTileOverlay class]]) {
+      return [[MKTileOverlayRenderer alloc] initWithTileOverlay:overlay];
+    } else if ([overlay isKindOfClass:[AIRMapPolyline class]]) {
         return ((AIRMapPolyline *)overlay).renderer;
     } else if ([overlay isKindOfClass:[AIRMapPolygon class]]) {
         return ((AIRMapPolygon *)overlay).renderer;
