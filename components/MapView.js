@@ -117,6 +117,7 @@ var MapView = React.createClass({
      * - satellite: satellite view
      * - hybrid: satellite view with roads and points of interest overlayed
      * - terrain: terrain view
+     * - custom: custom map tiles
      */
     mapType: PropTypes.oneOf([
       'standard',
