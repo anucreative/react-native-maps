@@ -122,7 +122,8 @@ var MapView = React.createClass({
       'standard',
       'satellite',
       'hybrid',
-      'terrain'
+      'terrain',
+      'custom'
     ]),
 
     /**
