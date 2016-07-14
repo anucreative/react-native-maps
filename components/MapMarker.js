@@ -248,6 +248,8 @@ var MapMarker = React.createClass({
       <AIRMapMarker
         ref="marker"
         {...this.props}
+        accessible={true}
+        accessibilityLabel={`Pin ${this.props.id}`}
         image={image}
         style={[styles.marker, this.props.style]}
         onPress={this._onPress}
